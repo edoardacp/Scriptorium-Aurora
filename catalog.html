@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Scriptorium Aurora — Catálogo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+      <div class="brand">
+        <div class="logo">SA</div>
+        <div>
+          <h1>Catálogo</h1>
+          <p class="small-muted">Explore nossa coleção</p>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Navegação">
+        <a href="index.html">Principal</a>
+        <a href="catalog.html">Catálogo</a>
+        <a href="about.html">Sobre</a>
+        <a href="contact.html">Contato</a>
+      </nav>
+    </header>
+
+  <div class="container">
+    <main class="main" style="grid-template-columns: 1fr; padding: 24px;">
+      <section class="card">
+        <h2 class="section-title">Catálogo completo</h2>
+        <p class="small-muted">Lista apenas para visualização. (JS pode reutilizar a mesma fonte de dados da página principal.)</p>
+
+        <!-- Grid de cartões de livros -->
+        <div id="catalog-grid" style="display:grid; grid-template-columns: repeat(auto-fill,minmax(220px,1fr)); gap:16px; margin-top:16px;">
+          <!-- Exemplo de card (JS substitui) -->
+          <article class="card" aria-label="Livro exemplo" style="padding:12px;">
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div class="cover" style="width:72px;height:100px;border-radius:8px;">BK</div>
+              <div style="flex:1;">
+                <div class="book-title">Título Exemplo</div>
+                <div class="book-meta">Autor — 2020</div>
+                <p class="muted" style="margin-top:8px; font-size:13px;">Breve sinopse do livro...</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>Scriptorium Aurora</div>
+      <div class="muted">Navegue e escolha seu próximo livro</div>
+    </footer>
+  </div>
+</body>
+</html>
