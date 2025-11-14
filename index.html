@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Scriptorium Aurora — Principal</title>
+
+  <!-- Fontes -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header" role="banner">
+      <div class="brand" aria-label="Marca Biblioteca">
+        <div class="logo" aria-hidden="true">SA</div>
+        <div>
+          <h1>Scriptorium Aurora</h1>
+          <p class="small-muted">Sistema de catálogo e empréstimos</p>
+        </div>
+      </div>
+
+      <nav class="nav" role="navigation" aria-label="Navegação principal">
+        <a href="index.html">Principal</a>
+        <a href="catalog.html">Catálogo</a>
+        <a href="about.html">Sobre</a>
+        <a href="contact.html">Contato</a>
+      </nav>
+    </header>
+
+  <div class="container" role="document">
+    <main class="main" role="main">
+      <!-- ESQUERDA: Listagem e ações principais -->
+      <section class="card primary" aria-labelledby="main-title">
+        <div class="title">
+          <div>
+            <div id="main-title" class="h1">Livros cadastrados</div>
+            <div class="small-muted">Crie, edite e exclua livros.</div>
+          </div>
+
+          <div class="row">
+            <button class="btn primary" id="refresh-btn" aria-label="Atualizar lista">Atualizar</button>
+            <button class="btn" id="new-book-btn" aria-controls="book-form" aria-expanded="false">Novo livro</button>
+          </div>
+        </div>
+
+        <!-- Busca simples -->
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label for="search">Buscar por título</label>
+          <input id="search" type="text" placeholder="Digite parte do título..." />
+          <p class="hint">Dica: a busca é feita localmente (JS) para não depender da API.</p>
+        </div>
+
+        <!-- Lista de livros (o JS deve popular este elemento) -->
+        <div id="books-container" class="book-list" aria-live="polite">
+          <!-- Exemplo de item (sera substituído pelo JS):
+          <article class="book" data-id="1">
+            <div class="cover">BK</div>
+            <div class="book-details">
+              <div class="book-title">Título do livro</div>
+              <div class="book-meta">Autor • 2021 • Ficção</div>
+            </div>
+            <div class="book-actions">
+              <button class="btn small" data-action="edit">Editar</button>
+              <button class="btn small" data-action="delete">Excluir</button>
+            </div>
+          </article>
+          -->
+          <div class="center muted">
+            Nenhum livro carregado. Clique em <strong>Atualizar</strong> ou adicione um novo.
+          </div>
+        </div>
+      </section>
+
+      <!-- DIREITA: Formulário de cadastro/edição -->
+      <aside class="card sidebar" aria-labelledby="form-title">
+        <h2 id="form-title" class="section-title">Formulário de livro</h2>
+
+        <!-- O JS deve alternar entre modo "create" e "edit". -->
+        <form id="book-form" novalidate>
+          <!-- campo oculto para id durante edição -->
+          <input type="hidden" id="book-id" name="id" />
+
+          <div class="form-group" id="group-title">
+            <label for="title">Título</label>
+            <input id="title" name="title" type="text" minlength="3" required aria-describedby="title-help" />
+            <div class="error-msg" id="err-title">O título precisa ter pelo menos 3 caracteres.</div>
+            <div id="title-help" class="hint">Mínimo 3 caracteres.</div>
+          </div>
+
+          <div class="form-group" id="group-author">
+            <label for="author">Autor</label>
+            <input id="author" name="author" type="text" required />
+            <div class="error-msg" id="err-author">Por favor informe o autor.</div>
+          </div>
+
+          <div class="form-group" id="group-year">
+            <label for="year">Ano de publicação</label>
+            <input id="year" name="year" type="number" min="1000" max="2026" inputmode="numeric" />
+            <div class="error-msg" id="err-year">Informe um ano válido.</div>
+          </div>
+
+          <div class="form-group" id="group-genre">
+            <label for="genre">Gênero</label>
+            <select id="genre" name="genre">
+              <option value="">Selecione</option>
+              <option>Ficção</option>
+              <option>Não-ficção</option>
+              <option>Infantil</option>
+              <option>Autoajuda</option>
+              <option>Fantasia</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="group-desc">
+            <label for="desc">Descrição (opcional)</label>
+            <textarea id="desc" name="description" maxlength="600" placeholder="Curta descrição do livro..."></textarea>
+            <div class="hint">Máx. 600 caracteres.</div>
+          </div>
+
+          <div class="row" style="margin-top:6px;">
+            <button type="submit" class="btn primary" id="save-btn">Salvar</button>
+            <button type="button" class="btn" id="cancel-btn">Cancelar</button>
+            <button type="button" class="btn ghost" id="clear-btn">Limpar</button>
+          </div>
+
+          <!-- Área para feedback (sucesso/erro) -->
+          <div id="form-feedback" aria-live="polite" style="margin-top:12px;"></div>
+        </form>
+
+        <hr style="margin:14px 0; border:none; border-top:1px solid rgba(255,255,255,0.02)" />
+      </aside>
+    </main>
+  </div>
+
+    <footer class="footer" role="contentinfo">
+      <div>Feito por: <strong>Edoarda Cenci Piraí</strong> & <strong>Julia Mamus Portela</strong></div>
+    </footer>
+  <!-- Nota: o JS deve:
+       - Popular a lista em #books-container
+       - Conectar eventos: #refresh-btn, #new-book-btn, #book-form submit, data-action edit/delete
+       - Mostrar mensagens no #form-feedback e usar classes .invalid nos grupos quando necessário
+       - Fazer fetch para JSONPlaceholder (/posts) usando POST/PUT/DELETE e manter estado local atualizado. 
+  
+       Observações para (JS):
+       - GET inicial deve popular <code>#books-container</code>.
+       - POST/PUT/DELETE devem atualizar o estado local imediatamente (atualização otimista).
+       - IDs dos livros devem ser guardados em <code>#book-id</code> durante edição.
+    -->
+</body>
+</html>
