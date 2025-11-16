@@ -10,6 +10,8 @@
 
   <link rel="stylesheet" href="styles.css">
 </head>
+<script src="script.js"></script>
+
 <body>
   <header class="header" role="banner">
       <div class="brand" aria-label="Marca Biblioteca">
@@ -53,19 +55,6 @@
 
         <!-- Lista de livros (o JS deve popular este elemento) -->
         <div id="books-container" class="book-list" aria-live="polite">
-          <!-- Exemplo de item (sera substituído pelo JS):
-          <article class="book" data-id="1">
-            <div class="cover">BK</div>
-            <div class="book-details">
-              <div class="book-title">Título do livro</div>
-              <div class="book-meta">Autor • 2021 • Ficção</div>
-            </div>
-            <div class="book-actions">
-              <button class="btn small" data-action="edit">Editar</button>
-              <button class="btn small" data-action="delete">Excluir</button>
-            </div>
-          </article>
-          -->
           <div class="center muted">
             Nenhum livro carregado. Clique em <strong>Atualizar</strong> ou adicione um novo.
           </div>
@@ -136,16 +125,6 @@
     <footer class="footer" role="contentinfo">
       <div>Feito por: <strong>Edoarda Cenci Piraí</strong> & <strong>Julia Mamus Portela</strong></div>
     </footer>
-  <!-- Nota: o JS deve:
-       - Popular a lista em #books-container
-       - Conectar eventos: #refresh-btn, #new-book-btn, #book-form submit, data-action edit/delete
-       - Mostrar mensagens no #form-feedback e usar classes .invalid nos grupos quando necessário
-       - Fazer fetch para JSONPlaceholder (/posts) usando POST/PUT/DELETE e manter estado local atualizado. 
-  
-       Observações para (JS):
-       - GET inicial deve popular <code>#books-container</code>.
-       - POST/PUT/DELETE devem atualizar o estado local imediatamente (atualização otimista).
-       - IDs dos livros devem ser guardados em <code>#book-id</code> durante edição.
-    -->
 </body>
+<script src="script.js"></script>
 </html>
