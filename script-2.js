@@ -1,6 +1,4 @@
-/* ============================
-   VARIÁVEIS GERAIS
-============================ */
+/* VARIÁVEIS GERAIS */
 const container = document.getElementById("books-container");
 const searchInput = document.getElementById("search");
 const titleHelp = document.getElementById("title-help")
@@ -23,15 +21,11 @@ const inpDesc = document.getElementById("desc");
 
 const saveBtn = document.getElementById("save-btn");
 
-/* ============================
-   ESTADO GLOBAL
-============================ */
+/*  ESTADO GLOBAL */
 let books = JSON.parse(localStorage.getItem("livros")) || [];
 let paginaAtual = 0;
 
-/* ============================
-   UTILIDADES
-============================ */
+/* UTILIDADES */
 function saveLS() {
   localStorage.setItem("livros", JSON.stringify(books));
 }
@@ -46,10 +40,7 @@ function gerarID() {
   return String(Date.now()) + Math.random().toString(36).slice(2, 9);
 }
 
-/* ============================
-   VALIDAÇÃO (adicionadas)
-   - usar base que você forneceu
-============================ */
+/* VALIDAÇÃO */
 const titulo = inpTitle;
 const mensagemErro = formFeedback; 
 function mostrarErro(campo, mensagem) {
@@ -130,9 +121,7 @@ inpYear.addEventListener("input", () => {
 
 atualizarBotao();
 
-/* ============================
-   GET — CARREGAR API
-============================ */
+/* GET — CARREGAR API */
 async function carregarLivrosAPI() {
   try {
     const res = await fetch("https://jsonplaceholder.typicode.com/posts");
@@ -156,9 +145,7 @@ async function carregarLivrosAPI() {
   }
 }
 
-/* ============================
-   RENDERIZAÇÃO
-============================ */
+/* RENDERIZAÇÃO */
 function renderPage() {
   container.querySelectorAll(".book").forEach(el => el.style.display = "none");
 
@@ -187,9 +174,7 @@ function renderPage() {
   });
 }
 
-/* ============================
-   CRUD — CREATE
-============================ */
+/* CRUD — CREATE */
 async function createBook(book) {
   const tempID = book.id;
 
@@ -214,9 +199,7 @@ async function createBook(book) {
   }
 }
 
-/* ============================
-   CRUD — UPDATE
-============================ */
+/* CRUD — UPDATE */
 async function updateBook(book) {
   const idx = books.findIndex(b => b.id === book.id);
   if (idx === -1) return;
@@ -245,9 +228,7 @@ async function updateBook(book) {
   }
 }
 
-/* ============================
-   CRUD — DELETE
-============================ */
+/* CRUD — DELETE */
 async function deleteBook(id) {
   const snapshot = [...books];
 
@@ -271,9 +252,7 @@ async function deleteBook(id) {
   }
 }
 
-/* ============================
-   FORMULÁRIO
-============================ */
+/* FORMULÁRIO */
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -302,9 +281,7 @@ form.addEventListener("submit", (e) => {
   atualizarBotao();
 });
 
-/* ============================
-   LISTENERS NO CONTAINER (editar/excluir)
-============================ */
+/* LISTENERS NO CONTAINER (editar/excluir) */
 container.addEventListener("click", (e) => {
   const btn = e.target.closest("button");
   if (!btn) return;
@@ -333,9 +310,7 @@ container.addEventListener("click", (e) => {
   }
 });
 
-/* ============================
-   PAGINAÇÃO
-============================ */
+/* PAGINAÇÃO */
 btnDepois.addEventListener("click", () => {
   if ((paginaAtual + 1) * 3 < books.length) {
     paginaAtual++;
@@ -350,9 +325,7 @@ btnAntes.addEventListener("click", () => {
   }
 });
 
-/* ============================
-   BUSCA POR TÍTULO
-============================ */
+/* BUSCA POR TÍTULO */
 searchInput.addEventListener("input", () => {
   const termo = searchInput.value.toLowerCase().trim();
 
@@ -374,9 +347,7 @@ searchInput.addEventListener("input", () => {
   });
 });
 
-/* ============================
-   BOTÕES AUXILIARES
-============================ */
+/* BOTÕES AUXILIARES */
 btnRefresh.addEventListener("click", carregarLivrosAPI);
 
 btnNew.addEventListener("click", () => {
@@ -386,9 +357,7 @@ btnNew.addEventListener("click", () => {
   atualizarBotao();
 });
 
-/* ============================
-   BOTÕES CANCELAR E LIMPAR
-============================ */
+/* BOTÕES CANCELAR E LIMPAR */
 
 document.getElementById("clear-btn").addEventListener("click", () => {
   form.reset();
@@ -413,9 +382,7 @@ document.getElementById("cancel-btn").addEventListener("click", () => {
   atualizarBotao();
 });
 
-/* ============================
-   INICIALIZAÇÃO
-============================ */
+/* INICIALIZAÇÃO */
 if (!books || books.length === 0) {
   carregarLivrosAPI();
 } else {
