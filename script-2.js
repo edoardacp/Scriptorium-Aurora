@@ -416,9 +416,11 @@ document.getElementById("cancel-btn").addEventListener("click", () => {
 /* ============================
    INICIALIZAÇÃO
 ============================ */
-if (!books || books.length === 0) {
-  carregarLivrosAPI();
-} else {
-  renderPage();
-  atualizarBotao();
-}
+document.addEventListener("DOMContentLoaded", () => {
+    if (!books || books.length === 0) {
+    carregarLivrosAPI();
+    } else {
+    renderPage();
+    atualizarBotao();
+    }
+});
