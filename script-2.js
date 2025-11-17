@@ -22,6 +22,8 @@ const inpDesc = document.getElementById("desc");
 const saveBtn = document.getElementById("save-btn");
 
 /*  ESTADO GLOBAL */
+
+// Lista de livros armazenada no localStorage
 let books = JSON.parse(localStorage.getItem("livros")) || [];
 
 // Página atual da listagem (usada na mudaça de página)
@@ -132,30 +134,34 @@ inpYear.addEventListener("input", () => {
 atualizarBotao();
 
 /* GET — CARREGAR API */
+
+// Carrega livros da API
 async function carregarLivrosAPI() {
-  try {
-    const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-    const data = await res.json();
+    try {
+        const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+        const data = await res.json();
 
-    books = data.slice(0, 12).map(p => ({
-      id: gerarID(),
-      title: p.title,
-      author: "Desconhecido",
-      year: "",
-      genre: "Outro",
-      description: p.body
-    }));
+        books = data.slice(0, 12).map(p => ({
+        id: gerarID(),
+        title: p.title,
+        author: "Desconhecido",
+        year: "",
+        genre: "Outro",
+        description: p.body
+        }));
 
-    paginaAtual = 0;
-    saveLS();
-    renderPage();
-  } catch (e) {
-    console.log("Erro no GET:", e);
-    showMessage("Erro ao carregar livros", "error");
-  }
+        paginaAtual = 0;
+        saveLS();
+        renderPage();
+    } catch (e) {
+        console.log("Erro no GET:", e);
+        showMessage("Erro ao carregar livros", "error");
+    }
 }
 
 /* RENDERIZAÇÃO */
+
+// Atualiza a página com no máximo 3 livros
 function renderPage() {
     container.querySelectorAll(".book").forEach(el => el.style.display = "none");
 
@@ -172,6 +178,7 @@ function renderPage() {
         if (listagemEl) listagemEl.style.display = "none";
     }
 
+    // Preenche os slots existentes
     const slots = Array.from(container.querySelectorAll(".book"));
 
   pageBooks.forEach((b, i) => {
@@ -189,6 +196,8 @@ function renderPage() {
 }
 
 /* CRUD — CREATE */
+
+// Cria um novo livro
 async function createBook(book) {
     const tempID = book.id;
 
@@ -215,7 +224,11 @@ async function createBook(book) {
 }
 
 /* CRUD — UPDATE */
+
+// Edita um livro já existente
 async function updateBook(book) {
+
+    // Procura índice do livro na lista local
     const idx = books.findIndex(b => b.id === book.id);
     if (idx === -1) return;
 
@@ -245,6 +258,8 @@ async function updateBook(book) {
 }
 
 /* CRUD — DELETE */
+
+// Exclui livro pelo ID
 async function deleteBook(id) {
     const snapshot = [...books];
 
@@ -270,6 +285,8 @@ async function deleteBook(id) {
 }
 
 /* FORMULÁRIO */
+
+// Submit do formulário
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -298,7 +315,9 @@ form.addEventListener("submit", (e) => {
   atualizarBotao();
 });
 
-/* LISTENERS NO CONTAINER (editar/excluir) */
+/* BOTÕES EDITAR/EXCLUIR */
+
+//Faz o funcionamento dos botões de editar e excluir de cada livro
 container.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
@@ -330,6 +349,8 @@ container.addEventListener("click", (e) => {
 });
 
 /* PAGINAÇÃO */
+
+// Próxima página
 btnDepois.addEventListener("click", () => {
     if ((paginaAtual + 1) * 3 < books.length) {
         paginaAtual++;
@@ -371,6 +392,8 @@ searchInput.addEventListener("input", () => {
 });
 
 /* BOTÕES AUXILIARES */
+
+// Recarrega os livros da API
 btnRefresh.addEventListener("click", carregarLivrosAPI);
 
 // Criar novo livro (limpa formulário)
@@ -409,6 +432,8 @@ document.getElementById("cancel-btn").addEventListener("click", () => {
 });
 
 /* INICIALIZAÇÃO */
+
+// Carrega API se não houver livros salvos
 if (!books || books.length === 0) {
   carregarLivrosAPI();
 } else {
