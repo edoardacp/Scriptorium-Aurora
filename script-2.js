@@ -1,6 +1,4 @@
-/* ============================
-   VARIÁVEIS GERAIS
-============================ */
+/* VARIÁVEIS GERAIS */
 const container = document.getElementById("books-container");
 const searchInput = document.getElementById("search");
 const titleHelp = document.getElementById("title-help")
@@ -23,21 +21,13 @@ const inpDesc = document.getElementById("desc");
 
 const saveBtn = document.getElementById("save-btn");
 
-/* ============================
-   ESTADO GLOBAL
-============================ */
-
-// Lista de livros salva no localStorage (ou vazia se não existir)
+/*  ESTADO GLOBAL */
 let books = JSON.parse(localStorage.getItem("livros")) || [];
 
 // Página atual da listagem (usada na mudaça de página)
 let paginaAtual = 0;
 
-/* ============================
-   UTILIDADES
-============================ */
-
-// Salva o array `books` no localStorage
+/* UTILIDADES */
 function saveLS() {
   localStorage.setItem("livros", JSON.stringify(books));
 }
@@ -54,9 +44,7 @@ function gerarID() {
   return String(Date.now()) + Math.random().toString(36).slice(2, 9);
 }
 
-/* ============================
-   VALIDAÇÃO 
-============================ */
+/* VALIDAÇÃO */
 const titulo = inpTitle;
 const mensagemErro = formFeedback; 
 
@@ -143,11 +131,7 @@ inpYear.addEventListener("input", () => {
 
 atualizarBotao();
 
-/* ============================
-   GET — CARREGAR API
-============================ */
-
-// Carrega os livros da API 
+/* GET — CARREGAR API */
 async function carregarLivrosAPI() {
   try {
     const res = await fetch("https://jsonplaceholder.typicode.com/posts");
@@ -171,11 +155,7 @@ async function carregarLivrosAPI() {
   }
 }
 
-/* ============================
-   RENDERIZAÇÃO
-============================ */
-
-// Atualiza a exibição da página com no máximo 3 livros
+/* RENDERIZAÇÃO */
 function renderPage() {
     container.querySelectorAll(".book").forEach(el => el.style.display = "none");
 
@@ -194,23 +174,21 @@ function renderPage() {
 
     const slots = Array.from(container.querySelectorAll(".book"));
 
-    pageBooks.forEach((b, i) => {
-        const slot = slots[i];
-        if (!slot) return;
-        slot.dataset.id = b.id;
-        const titleEl = slot.querySelector(".book-title");
-        const descEl = slot.querySelector(".book-description");
-        if (titleEl) titleEl.textContent = b.title;
-        if (descEl) descEl.textContent = b.description || "";
-        slot.style.display = "flex";
-    });
+  pageBooks.forEach((b, i) => {
+    const slot = slots[i];
+    if (!slot) return;
+    slot.dataset.id = b.id;
+    const titleEl = slot.querySelector(".book-title");
+    const metaEl = slot.querySelector(".book-meta");
+    const descEl = slot.querySelector(".book-description");
+    if (titleEl) titleEl.textContent = b.title;
+    if (metaEl) metaEl.textContent = `${b.author || "—"} • ${b.year || "—"} • ${b.genre || "—"}`;
+    if (descEl) descEl.textContent = b.description || "";
+    slot.style.display = "flex";
+  });
 }
 
-/* ============================
-   CRUD — CREATE
-============================ */
-
-// Cria um novo livro
+/* CRUD — CREATE */
 async function createBook(book) {
     const tempID = book.id;
 
@@ -236,11 +214,7 @@ async function createBook(book) {
     }
 }
 
-/* ============================
-   CRUD — UPDATE
-============================ */
-
-// Edita um livro já existente
+/* CRUD — UPDATE */
 async function updateBook(book) {
     const idx = books.findIndex(b => b.id === book.id);
     if (idx === -1) return;
@@ -270,11 +244,7 @@ async function updateBook(book) {
     }
 }
 
-/* ============================
-   CRUD — DELETE
-============================ */
-
-// Exclui livro pelo ID
+/* CRUD — DELETE */
 async function deleteBook(id) {
     const snapshot = [...books];
 
@@ -299,11 +269,7 @@ async function deleteBook(id) {
     }
 }
 
-/* ============================
-   FORMULÁRIO
-============================ */
-
-// funcionamento do submit do formulário
+/* FORMULÁRIO */
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -332,11 +298,7 @@ form.addEventListener("submit", (e) => {
   atualizarBotao();
 });
 
-/* ============================
-   EDITAR E EXCLUIR
-============================ */
-
-// Função de funcionamento dos botões de editar e excluir
+/* LISTENERS NO CONTAINER (editar/excluir) */
 container.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
@@ -367,11 +329,7 @@ container.addEventListener("click", (e) => {
   }
 });
 
-/* ============================
-   PAGINAÇÃO
-============================ */
-
-// Próxima página
+/* PAGINAÇÃO */
 btnDepois.addEventListener("click", () => {
     if ((paginaAtual + 1) * 3 < books.length) {
         paginaAtual++;
@@ -387,9 +345,7 @@ btnAntes.addEventListener("click", () => {
     }
 });
 
-/* ============================
-   BUSCA POR TÍTULO
-============================ */
+/* BUSCA POR TÍTULO */
 searchInput.addEventListener("input", () => {
     const termo = searchInput.value.toLowerCase().trim();
 
@@ -414,11 +370,7 @@ searchInput.addEventListener("input", () => {
     });
 });
 
-/* ============================
-   BOTÕES AUXILIARES
-============================ */
-
-// Recarregar livros da API
+/* BOTÕES AUXILIARES */
 btnRefresh.addEventListener("click", carregarLivrosAPI);
 
 // Criar novo livro (limpa formulário)
@@ -429,9 +381,7 @@ btnNew.addEventListener("click", () => {
     atualizarBotao();
 });
 
-/* ============================
-   BOTÕES CANCELAR E LIMPAR
-============================ */
+/* BOTÕES CANCELAR E LIMPAR */
 
 // Botão limpar
 document.getElementById("clear-btn").addEventListener("click", () => {
@@ -458,18 +408,10 @@ document.getElementById("cancel-btn").addEventListener("click", () => {
     atualizarBotao();
 });
 
-/* ============================
-   INICIALIZAÇÃO
-============================ */
-
-// Quando a página carrega:
-document.addEventListener("DOMContentLoaded", () => {
-
-    // Se não houver livros salvos, carrega da API
-    if (!books || books.length === 0) {
-    carregarLivrosAPI();
-    } else {
-    renderPage();
-    atualizarBotao();
-    }
-});
+/* INICIALIZAÇÃO */
+if (!books || books.length === 0) {
+  carregarLivrosAPI();
+} else {
+  renderPage();
+  atualizarBotao();
+}
