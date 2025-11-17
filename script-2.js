@@ -26,32 +26,41 @@ const saveBtn = document.getElementById("save-btn");
 /* ============================
    ESTADO GLOBAL
 ============================ */
+
+// Lista de livros salva no localStorage (ou vazia se não existir)
 let books = JSON.parse(localStorage.getItem("livros")) || [];
+
+// Página atual da listagem (usada na mudaça de página)
 let paginaAtual = 0;
 
 /* ============================
    UTILIDADES
 ============================ */
+
+// Salva o array `books` no localStorage
 function saveLS() {
   localStorage.setItem("livros", JSON.stringify(books));
 }
 
+// Exibe uma mensagem ao usuário (sucesso ou erro)
 function showMessage(msg, type = "success") {
   formFeedback.textContent = msg;
   formFeedback.style.color = type === "error" ? "red" : "#48ff8f";
 }
 
+// Gera um ID para cada livro
 function gerarID() {
   if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
   return String(Date.now()) + Math.random().toString(36).slice(2, 9);
 }
 
 /* ============================
-   VALIDAÇÃO (adicionadas)
-   - usar base que você forneceu
+   VALIDAÇÃO 
 ============================ */
 const titulo = inpTitle;
 const mensagemErro = formFeedback; 
+
+// Mostra mensagem de erro em um campo 
 function mostrarErro(campo, mensagem) {
   const grupo = campo.closest(".form-group");
   if (!grupo) return;
@@ -61,12 +70,14 @@ function mostrarErro(campo, mensagem) {
   mensagemErro.innerHTML = "";
 }
 
+// Remove estado de erro de um campo
 function esconderErro(campo) {
   const grupo = campo.closest(".form-group");
   if (!grupo) return;
   grupo.classList.remove("invalid");
 }
 
+// Validações
 function validarTitulo() {
   return titulo.value.trim().length >= 3;
 }
@@ -99,11 +110,13 @@ function validarForm() {
   return okTitulo && okAutor && okAno;
 }
 
+// Habilita/desabilita o botão Salvar.
 function atualizarBotao() {
   if (!saveBtn) return;
   saveBtn.disabled = !validarTitulo() || !validarAutor() || !validarAno();
 }
 
+// validações em tempo real
 titulo.addEventListener("blur", () => {
   if (!validarTitulo()) mostrarErro(titulo, "Mínimo 3 caracteres.");
 });
@@ -133,6 +146,8 @@ atualizarBotao();
 /* ============================
    GET — CARREGAR API
 ============================ */
+
+// Carrega os livros da API 
 async function carregarLivrosAPI() {
   try {
     const res = await fetch("https://jsonplaceholder.typicode.com/posts");
@@ -159,121 +174,136 @@ async function carregarLivrosAPI() {
 /* ============================
    RENDERIZAÇÃO
 ============================ */
+
+// Atualiza a exibição da página com no máximo 3 livros
 function renderPage() {
-  container.querySelectorAll(".book").forEach(el => el.style.display = "none");
+    container.querySelectorAll(".book").forEach(el => el.style.display = "none");
 
-  const start = paginaAtual * 3;
-  const pageBooks = books.slice(start, start + 3);
+    // Define o intervalo da página atual
+    const start = paginaAtual * 3;
+    const pageBooks = books.slice(start, start + 3);
 
-  const listagemEl = document.getElementById("Listagem");
-  if (!pageBooks || pageBooks.length === 0) {
-    if (listagemEl) listagemEl.textContent = "Nenhum livro nesta página.";
-    return;
-  } else {
-    if (listagemEl) listagemEl.style.display = "none";
-  }
+    // Caso não tenha resultados na página
+    const listagemEl = document.getElementById("Listagem");
+    if (!pageBooks || pageBooks.length === 0) {
+        if (listagemEl) listagemEl.textContent = "Nenhum livro nesta página.";
+        return;
+    } else {
+        if (listagemEl) listagemEl.style.display = "none";
+    }
 
-  const slots = Array.from(container.querySelectorAll(".book"));
+    const slots = Array.from(container.querySelectorAll(".book"));
 
-  pageBooks.forEach((b, i) => {
-    const slot = slots[i];
-    if (!slot) return;
-    slot.dataset.id = b.id;
-    const titleEl = slot.querySelector(".book-title");
-    const descEl = slot.querySelector(".book-description");
-    if (titleEl) titleEl.textContent = b.title;
-    if (descEl) descEl.textContent = b.description || "";
-    slot.style.display = "flex";
-  });
+    pageBooks.forEach((b, i) => {
+        const slot = slots[i];
+        if (!slot) return;
+        slot.dataset.id = b.id;
+        const titleEl = slot.querySelector(".book-title");
+        const descEl = slot.querySelector(".book-description");
+        if (titleEl) titleEl.textContent = b.title;
+        if (descEl) descEl.textContent = b.description || "";
+        slot.style.display = "flex";
+    });
 }
 
 /* ============================
    CRUD — CREATE
 ============================ */
+
+// Cria um novo livro
 async function createBook(book) {
-  const tempID = book.id;
+    const tempID = book.id;
 
-  books.unshift(book);
-  saveLS();
-  renderPage();
-
-  try {
-    const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "POST",
-      body: JSON.stringify(book),
-      headers: { "Content-Type": "application/json" }
-    });
-
-    if (!res.ok) throw new Error();
-    showMessage("Livro criado!");
-  } catch (e) {
-    books = books.filter(b => b.id !== tempID);
+    books.unshift(book);
     saveLS();
     renderPage();
-    showMessage("Erro ao criar livro!", "error");
-  }
+
+    // Envia para a API (simulação)
+    try {
+        const res = await fetch("https://jsonplaceholder.typicode.com/posts", {
+        method: "POST",
+        body: JSON.stringify(book),
+        headers: { "Content-Type": "application/json" }
+        });
+
+        if (!res.ok) throw new Error();
+        showMessage("Livro criado!");
+    } catch (e) {
+        books = books.filter(b => b.id !== tempID);
+        saveLS();
+        renderPage();
+        showMessage("Erro ao criar livro!", "error");
+    }
 }
 
 /* ============================
    CRUD — UPDATE
 ============================ */
+
+// Edita um livro já existente
 async function updateBook(book) {
-  const idx = books.findIndex(b => b.id === book.id);
-  if (idx === -1) return;
+    const idx = books.findIndex(b => b.id === book.id);
+    if (idx === -1) return;
 
-  const snapshot = [...books];
+    const snapshot = [...books];
 
-  books[idx] = book;
-  saveLS();
-  renderPage();
-
-  try {
-    const fakeID = 1;
-    const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${fakeID}`, {
-      method: "PUT",
-      body: JSON.stringify(book),
-      headers: { "Content-Type": "application/json" }
-    });
-
-    if (!res.ok) throw new Error();
-    showMessage("Livro atualizado!");
-  } catch {
-    books = snapshot;
+    books[idx] = book;
     saveLS();
     renderPage();
-    showMessage("Erro ao editar livro!", "error");
-  }
+
+    // Envia update para API (simulação)
+    try {
+        const fakeID = 1;
+        const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${fakeID}`, {
+        method: "PUT",
+        body: JSON.stringify(book),
+        headers: { "Content-Type": "application/json" }
+        });
+
+        if (!res.ok) throw new Error();
+        showMessage("Livro atualizado!");
+    } catch {
+        books = snapshot;
+        saveLS();
+        renderPage();
+        showMessage("Erro ao editar livro!", "error");
+    }
 }
 
 /* ============================
    CRUD — DELETE
 ============================ */
+
+// Exclui livro pelo ID
 async function deleteBook(id) {
-  const snapshot = [...books];
+    const snapshot = [...books];
 
-  books = books.filter(b => b.id !== id);
-  saveLS();
-  renderPage();
-
-  try {
-    const res = await fetch(`https://jsonplaceholder.typicode.com/posts/1`, {
-      method: "DELETE"
-    });
-
-    if (!res.ok) throw new Error();
-
-    showMessage("Livro removido!");
-  } catch {
-    books = snapshot;
+    books = books.filter(b => b.id !== id);
     saveLS();
     renderPage();
-    showMessage("Erro ao excluir!", "error");
-  }
+
+    // Tenta excluir na API (simulação, apaga se for criado pela pessoa, se não é uma simulação)
+    try {
+        const res = await fetch(`https://jsonplaceholder.typicode.com/posts/1`, {
+        method: "DELETE"
+        });
+
+        if (!res.ok) throw new Error();
+
+        showMessage("Livro removido!");
+    } catch {
+        books = snapshot;
+        saveLS();
+        renderPage();
+        showMessage("Erro ao excluir!", "error");
+    }
 }
 
 /* ============================
    FORMULÁRIO
 ============================ */
+
+// funcionamento do submit do formulário
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 
@@ -303,120 +333,139 @@ form.addEventListener("submit", (e) => {
 });
 
 /* ============================
-   LISTENERS NO CONTAINER (editar/excluir)
+   EDITAR E EXCLUIR
 ============================ */
+
+// Função de funcionamento dos botões de editar e excluir
 container.addEventListener("click", (e) => {
-  const btn = e.target.closest("button");
-  if (!btn) return;
+    const btn = e.target.closest("button");
+    if (!btn) return;
 
-  const article = e.target.closest(".book");
-  if (!article) return;
-  const id = article.dataset.id;
+    const article = e.target.closest(".book");
+    if (!article) return;
+    const id = article.dataset.id;
 
-  if (btn.dataset.action === "delete") {
-    deleteBook(id);
-  }
+    // Excluir
+    if (btn.dataset.action === "delete") {
+        deleteBook(id);
+    }
 
-  if (btn.dataset.action === "edit") {
-    const livro = books.find(b => b.id === id);
-    if (!livro) return;
+    // Editar
+    if (btn.dataset.action === "edit") {
+        const livro = books.find(b => b.id === id);
+        if (!livro) return;
 
-    formID.value = livro.id;
-    inpTitle.value = livro.title;
-    inpAuthor.value = livro.author;
-    inpYear.value = livro.year;
-    inpGenre.value = livro.genre;
-    inpDesc.value = livro.description;
+        formID.value = livro.id;
+        inpTitle.value = livro.title;
+        inpAuthor.value = livro.author;
+        inpYear.value = livro.year;
+        inpGenre.value = livro.genre;
+        inpDesc.value = livro.description;
 
-    showMessage("Editando...");
-    atualizarBotao();
+        showMessage("Editando...");
+        atualizarBotao();
   }
 });
 
 /* ============================
    PAGINAÇÃO
 ============================ */
+
+// Próxima página
 btnDepois.addEventListener("click", () => {
-  if ((paginaAtual + 1) * 3 < books.length) {
-    paginaAtual++;
-    renderPage();
-  }
+    if ((paginaAtual + 1) * 3 < books.length) {
+        paginaAtual++;
+        renderPage();
+    }
 });
 
+// Página anterior
 btnAntes.addEventListener("click", () => {
-  if (paginaAtual > 0) {
-    paginaAtual--;
-    renderPage();
-  }
+    if (paginaAtual > 0) {
+        paginaAtual--;
+        renderPage();
+    }
 });
 
 /* ============================
    BUSCA POR TÍTULO
 ============================ */
 searchInput.addEventListener("input", () => {
-  const termo = searchInput.value.toLowerCase().trim();
+    const termo = searchInput.value.toLowerCase().trim();
 
-  if (!termo) {
-    renderPage();
-    return;
-  }
+    if (!termo) {
+        renderPage();
+        return;
+    }
 
-  const filtrados = books.filter(b => b.title.toLowerCase().includes(termo));
+    // Filtra livros pelo título
+    const filtrados = books.filter(b => b.title.toLowerCase().includes(termo));
 
-  container.querySelectorAll(".book").forEach(el => el.style.display = "none");
-  filtrados.slice(0, 3).forEach((b, i) => {
-    const slot = container.querySelectorAll(".book")[i];
-    if (!slot) return;
-    slot.style.display = "flex";
-    slot.dataset.id = b.id;
-    slot.querySelector(".book-title").textContent = b.title;
-    slot.querySelector(".book-description").textContent = b.description;
-  });
+    container.querySelectorAll(".book").forEach(el => el.style.display = "none");
+
+    // Mostra até 3 resultados filtrados
+    filtrados.slice(0, 3).forEach((b, i) => {
+        const slot = container.querySelectorAll(".book")[i];
+        if (!slot) return;
+        slot.style.display = "flex";
+        slot.dataset.id = b.id;
+        slot.querySelector(".book-title").textContent = b.title;
+        slot.querySelector(".book-description").textContent = b.description;
+    });
 });
 
 /* ============================
    BOTÕES AUXILIARES
 ============================ */
+
+// Recarregar livros da API
 btnRefresh.addEventListener("click", carregarLivrosAPI);
 
+// Criar novo livro (limpa formulário)
 btnNew.addEventListener("click", () => {
-  form.reset();
-  formID.value = "";
-  showMessage("Novo livro...");
-  atualizarBotao();
+    form.reset();
+    formID.value = "";
+    showMessage("Novo livro...");
+    atualizarBotao();
 });
 
 /* ============================
    BOTÕES CANCELAR E LIMPAR
 ============================ */
 
+// Botão limpar
 document.getElementById("clear-btn").addEventListener("click", () => {
-  form.reset();
+    form.reset();
 
-  form.querySelectorAll(".form-group").forEach(g => g.classList.remove("invalid"));
+    form.querySelectorAll(".form-group").forEach(g => g.classList.remove("invalid"));
 
-  titleHelp.innerHTML = "Mínimo 3 caracteres.";
+    titleHelp.innerHTML = "Mínimo 3 caracteres.";
 
-  showMessage("Campos limpos.");
-  atualizarBotao();
+    showMessage("Campos limpos.");
+    atualizarBotao();
 });
 
+// Botão cancelar edição
 document.getElementById("cancel-btn").addEventListener("click", () => {
-  form.reset();
-  formID.value = "";
+    form.reset();
+    formID.value = "";
 
-  form.querySelectorAll(".form-group").forEach(g => g.classList.remove("invalid"));
+    form.querySelectorAll(".form-group").forEach(g => g.classList.remove("invalid"));
 
-  titleHelp.innerHTML = "Mínimo 3 caracteres.";
+    titleHelp.innerHTML = "Mínimo 3 caracteres.";
 
-  showMessage("Edição cancelada.");
-  atualizarBotao();
+    showMessage("Edição cancelada.");
+    atualizarBotao();
 });
 
 /* ============================
    INICIALIZAÇÃO
 ============================ */
+
+// Quando a página carrega:
 document.addEventListener("DOMContentLoaded", () => {
+
+    // Se não houver livros salvos, carrega da API
     if (!books || books.length === 0) {
     carregarLivrosAPI();
     } else {

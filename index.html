@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Cabeçalho do site -->
   <header class="header" role="banner">
       <div class="brand" aria-label="Marca Biblioteca">
         <div class="logo" aria-hidden="true">SA</div>
@@ -19,6 +20,7 @@
         </div>
       </div>
 
+      <!-- Navegação entre as páginas -->
       <nav class="nav" role="navigation" aria-label="Navegação principal">
         <a href="index.html">Principal</a>
         <a href="catalog.html">Catálogo</a>
@@ -27,6 +29,7 @@
       </nav>
     </header>
 
+  <!-- Parte principal da página -->
   <div class="container" role="document">
     <main class="main" role="main">
       <section class="card primary" aria-labelledby="main-title">
@@ -37,53 +40,67 @@
           </div>
 
           <div class="row">
+            <!-- Botão para atualizar a lista de livros -->
             <button class="btn primary" id="refresh-btn" aria-label="Atualizar lista">Atualizar</button>
+            <!-- Botão para recetar o formulário de cadastro -->
             <button class="btn" id="new-book-btn" aria-controls="book-form" aria-expanded="false">Novo livro</button>
           </div>
         </div>
 
+        <!-- Área de pesquisa -->
         <div class="form-group" style="margin-bottom: 14px;">
           <label for="search">Buscar por título</label>
           <input id="search" type="text" placeholder="Digite parte do título..." />
         </div>
 
+        <!-- Área onde mostra os livros -->
         <div id="books-container" class="book-list" aria-live="polite">
 
+          <!-- Cartão dos livros -->
           <article class="book" data-id="1">
             <div class="book-details">
               <div class="book-title"></div>
               <div class="book-description"></div>
             </div>
+
+            <!-- Botões editar e excluir dos livros -->
             <div class="book-actions">
               <button class="btn small" data-action="edit">Editar</button>
               <button class="btn small" data-action="delete">Excluir</button>
             </div>
           </article>
+          <!--------------------------------------------------->
           <article class="book" data-id="2">
             <div class="book-details">
               <div class="book-title"></div>
               <div class="book-description"></div>
             </div>
+
             <div class="book-actions">
               <button class="btn small" data-action="edit">Editar</button>
               <button class="btn small" data-action="delete">Excluir</button>
             </div>
           </article>
+          <!--------------------------------------------------->
           <article class="book" data-id="3">
             <div class="book-details">
               <div class="book-title"></div>
               <div class="book-description"></div>
             </div>
+
             <div class="book-actions">
               <button class="btn small" data-action="edit">Editar</button>
               <button class="btn small" data-action="delete">Excluir</button>
             </div>
           </article>
         </div>
+
+        <!-- Botões de antes e depois das páginas de livro -->
         <button class="btn" id="antes">antes</button>
         <button class="btn" id="depois">depois</button>
       </section>
 
+      <!--Formulário de criação e edição de livros-->
       <aside class="card sidebar" aria-labelledby="form-title">
         <h2 id="form-title" class="section-title">Formulário de livro</h2>
 
@@ -91,24 +108,28 @@
 
           <input type="hidden" id="book-id" name="id" />
 
+          <!-- título -->
           <div class="form-group" id="group-title">
             <label for="title">Título</label>
             <input id="title" name="title" type="text" minlength="3" placeholder="Minimo 3 caracteres" aria-describedby="title-help" />
             <div class="error-msg" id="err-title"></div>
           </div>
 
+          <!-- autor -->
           <div class="form-group" id="group-author">
             <label for="author">Autor</label>
             <input id="author" name="author" type="text" placeholder="Autor" required />
             <div class="error-msg" id="err-author">.</div>
           </div>
 
+          <!-- ano -->
           <div class="form-group" id="group-year">
             <label for="year">Ano de publicação</label>
-            <input id="year" name="year" type="number" min="1000" max="2026" placeholder="Ano do Livro" inputmode="numeric" />
+            <input id="year" name="year" type="number" min="1000" max="2026" placeholder="Ano do Livro"  inputmode="numeric" />
             <div class="error-msg" id="err-year"></div>
           </div>
 
+          <!-- gênero -->
           <div class="form-group" id="group-genre">
             <label for="genre">Gênero</label>
             <select id="genre" name="genre">
@@ -122,18 +143,21 @@
             </select>
           </div>
 
+          <!-- descrição -->
           <div class="form-group" id="group-desc">
             <label for="desc">Descrição (opcional)</label>
             <textarea id="desc" name="description" maxlength="150" placeholder="Curta descrição do livro..."></textarea>
             <div class="hint">Máx. 150 caracteres.</div>
           </div>
 
+          <!-- Botões do formulário -->
           <div class="row" style="margin-top:6px;">
             <button type="submit" class="btn primary" id="save-btn">Salvar</button>
             <button type="button" class="btn" id="cancel-btn">Cancelar</button>
             <button type="button" class="btn ghost" id="clear-btn">Limpar</button>
           </div>
 
+          <!-- Área de mensagens de erro ou sucesso do formulário -->
           <div id="form-feedback" aria-live="polite" style="margin-top:12px;"></div>
         </form>
 
@@ -142,9 +166,11 @@
     </main>
   </div>
 
+    <!-- Rodapé -->
     <footer class="footer" role="contentinfo">
       <div>Feito por: <strong>Edoarda Cenci Piraí</strong> & <strong>Julia Mamus Portela</strong></div>
     </footer>
+
     <script src="script-2.js"></script>
 </body>
 </html>
