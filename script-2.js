@@ -167,8 +167,10 @@ function renderPage() {
     if (!slot) return;
     slot.dataset.id = b.id;
     const titleEl = slot.querySelector(".book-title");
+    const metaEl = slot.querySelector(".book-meta");
     const descEl = slot.querySelector(".book-description");
     if (titleEl) titleEl.textContent = b.title;
+    if (metaEl) metaEl.textContent = `${b.author || "—"} • ${b.year || "—"} • ${b.genre || "—"}`;
     if (descEl) descEl.textContent = b.description || "";
     slot.style.display = "flex";
   });
